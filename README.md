@@ -3,7 +3,7 @@
 Easy to use Golang Exec Library
 
 
-### Introduction
+## Introduction
 
 Gopal is simple library to allow developer exec-ing golang source codes.
 
@@ -12,7 +12,7 @@ Technically Golang doesn't provide API to do some exec, so we use temporary file
 [![Build Status](https://travis-ci.org/novalagung/gopal.png?branch=master)](https://travis-ci.org/novalagung/gopal)
 [![Version](http://img.shields.io/cocoapods/v/gopal.svg)](http://cocoadocs.org/docsets/gopal)
 
-### Installation
+## Installation
 
 Just go get the lib is enough
 
@@ -27,7 +27,7 @@ cd $GOPATH/src/github.com/novalagung/gopal
 go test *.go -v
 ```
 
-### Example
+## Example
 
 #### Simple Example
 
@@ -131,7 +131,7 @@ fmt.Println("result", "=>", output)
 
 For more examples please take a look at the [`gopal_test.go` file](https://github.com/novalagung/gopal/blob/master/gopal_test.go).
 
-### API Reference
+## API Reference
 
 #### Func of `gopal`
 
@@ -159,13 +159,13 @@ There are only one func available, `gopal.New()` which return object that type i
 | .DeleteTemporaryPath() | Force delete temporary path which used to do the exec process |
 
 
-### Contribution
+## Contribution
 
 Feel free to contribute
 
 `fork` -> `commit` -> `push` -> `pull request`
 
 
-### License
+## License
 
 MIT License
