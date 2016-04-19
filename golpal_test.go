@@ -1,10 +1,10 @@
 /*
- * Gopal - Easy to use Golang Exec Library
+ * Golpal - Easy to use Golang Exec Library
  * Created by Noval Agung Prayogo <caknopal@gmail.com>
  * http://novalagung.com/
  */
 
-package gopal
+package golpal
 
 import (
 	"testing"

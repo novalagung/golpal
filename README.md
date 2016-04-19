@@ -1,4 +1,4 @@
-# Gopal
+# Golpal
 
 Easy to use Golang Exec Library
 
@@ -6,24 +6,24 @@ Easy to use Golang Exec Library
 
 ## Introduction
 
-Gopal is simple library to allow developer exec-ing golang source codes.
+Golpal is simple library to allow developer exec-ing golang source codes.
 
 Technically Golang doesn't provide API to do some exec, so we use temporary file to achieve that.
 
-[![Build Status](https://travis-ci.org/novalagung/gopal.png?branch=master)](https://travis-ci.org/novalagung/gopal)
+[![Build Status](https://travis-ci.org/novalagung/golpal.png?branch=master)](https://travis-ci.org/novalagung/golpal)
 
 ## Installation
 
 Just go get the lib is enough
 
 ```bash
-go get -u github.com/novalagung/gopal
+go get -u github.com/novalagung/golpal
 ```
 
 Run test
 
 ```bash
-cd $GOPATH/src/github.com/novalagung/gopal
+cd $GOPATH/src/github.com/novalagung/golpal
 go test *.go -v
 ```
 
@@ -34,12 +34,12 @@ go test *.go -v
 ```go
 package main
 
-import "github.com/novalagung/gopal"
+import "github.com/novalagung/golpal"
 import "fmt"
 
 func main() {
 	cmdString := `3 + 2`
-	output, err := gopal.New().ExecuteSimple(cmdString)
+	output, err := golpal.New().ExecuteSimple(cmdString)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -59,7 +59,7 @@ cmdString := `
 	}
 `
 
-output, err := gopal.New().ExecuteSimple(cmdString)
+output, err := golpal.New().ExecuteSimple(cmdString)
 if err != nil {
 	fmt.Println(err)
 }
@@ -75,7 +75,7 @@ cmdString := `
 	return strings.Join(arr, ", ")
 `
 
-output, err := gopal.New().AddLibs("strings", "runtime").ExecuteSimple(cmdString)
+output, err := golpal.New().AddLibs("strings", "runtime").ExecuteSimple(cmdString)
 if err != nil {
 	fmt.Println(err)
 }
@@ -100,7 +100,7 @@ cmdString := `
 	}
 `
 
-output, err := gopal.New().Execute(cmdString)
+output, err := golpal.New().Execute(cmdString)
 if err != nil {
 	fmt.Println(err)
 }
@@ -120,7 +120,7 @@ cmdString := `
 	}
 `
 
-output, err := gopal.New().ExecuteRaw(cmdString)
+output, err := golpal.New().ExecuteRaw(cmdString)
 if err != nil {
 	fmt.Println(err)
 }
@@ -129,26 +129,26 @@ fmt.Println("result", "=>", output)
 
 #### More Example
 
-For more examples please take a look at the [`gopal_test.go` file](https://github.com/novalagung/gopal/blob/master/gopal_test.go).
+For more examples please take a look at the [`golpal_test.go` file](https://github.com/novalagung/golpal/blob/master/golpal_test.go).
 
 ## API Reference
 
-#### Func of `gopal`
+#### Func of `golpal`
 
-There are only one func available, `gopal.New()` which return object that type is `*gopal.Gopal`
+There are only one func available, `golpal.New()` which return object that type is `*golpal.Golpal`
 
 | Func        | Usage          |
 | ----------- | :------------- |
-| gopal.New() | instantiate new `*gopal.Gopal` object |
+| golpal.New() | instantiate new `*golpal.Golpal` object |
 
-#### Property of `*gopal.Gopal`
+#### Property of `*golpal.Golpal`
 
 | Property    | Type | Usage          |
 | ----------- | ---- | :------------- |
 | .WillDeleteTemporaryFile | `bool` | Determine if temporary path will be deleted or not after executing the source codes (default is `true`) |
 | .TemporaryFolderName | `string` | Name of temporary folder used to store all `*.go` temp files (default is `.temp` for *\*nix* / \*d*rwin*, and `temp` for *w\*ndows*) | Run golang source codes. The code will be placed inside virtual `main()` func |
 
-#### Methods of `*gopal.Gopal`
+#### Methods of `*golpal.Golpal`
 
 | Method      | Usage          |
 | ----------- | :------------- |

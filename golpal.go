@@ -1,10 +1,10 @@
 /*
- * Gopal - Easy to use Golang Exec Library
+ * Golpal - Easy to use Golang Exec Library
  * Created by Noval Agung Prayogo <caknopal@gmail.com>
  * http://novalagung.com/
  */
 
-package gopal
+package golpal
 
 import "fmt"
 import "os"
@@ -43,7 +43,7 @@ const (
 	rawConstMain               = `__MAIN__`
 )
 
-type Gopal struct {
+type Golpal struct {
 	WillDeleteTemporaryFile bool
 	TemporaryFolderName     string
 
@@ -51,8 +51,8 @@ type Gopal struct {
 	libs                []string
 }
 
-func New() *Gopal {
-	g := new(Gopal)
+func New() *Golpal {
+	g := new(Golpal)
 	g.WillDeleteTemporaryFile = defaultDeleteTemporaryFile
 	g.prepareDefaultTemporaryFolderName()
 	g.prepareDefaultLibs()
@@ -60,7 +60,7 @@ func New() *Gopal {
 	return g
 }
 
-func (g *Gopal) prepareDefaultTemporaryFolderName() {
+func (g *Golpal) prepareDefaultTemporaryFolderName() {
 	if runtime.GOOS == "windows" {
 		g.TemporaryFolderName = "temp"
 	}
@@ -68,16 +68,16 @@ func (g *Gopal) prepareDefaultTemporaryFolderName() {
 	g.TemporaryFolderName = ".temp"
 }
 
-func (g *Gopal) prepareDefaultLibs() {
+func (g *Golpal) prepareDefaultLibs() {
 	g.libs = []string{"fmt"}
 }
 
-func (g *Gopal) prepareTemporaryFolderPath() {
+func (g *Golpal) prepareTemporaryFolderPath() {
 	basePath, _ := os.Getwd()
 	g.temporaryFolderPath = filepath.Join(basePath, g.TemporaryFolderName)
 }
 
-func (g *Gopal) prepareTemporaryFile() (string, *os.File, error) {
+func (g *Golpal) prepareTemporaryFile() (string, *os.File, error) {
 	g.prepareTemporaryFolderPath()
 
 	filename := fmt.Sprintf("temp-%d.go", time.Now().UnixNano())
@@ -97,7 +97,7 @@ func (g *Gopal) prepareTemporaryFile() (string, *os.File, error) {
 	return fileLocation, file, err
 }
 
-func (g *Gopal) deleteTemporaryPathIfAllowed() {
+func (g *Golpal) deleteTemporaryPathIfAllowed() {
 	if !g.WillDeleteTemporaryFile {
 		return
 	}
@@ -105,7 +105,7 @@ func (g *Gopal) deleteTemporaryPathIfAllowed() {
 	g.DeleteTemporaryPath()
 }
 
-func (g *Gopal) runCommand(fileLocation string) (string, error) {
+func (g *Golpal) runCommand(fileLocation string) (string, error) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
@@ -125,7 +125,7 @@ func (g *Gopal) runCommand(fileLocation string) (string, error) {
 	return strings.TrimSpace(stdout.String()), nil
 }
 
-func (g *Gopal) renderLibs(cmdString string) string {
+func (g *Golpal) renderLibs(cmdString string) string {
 	quotedLibString := []string{}
 
 	for _, each := range g.libs {
@@ -145,16 +145,16 @@ func (g *Gopal) renderLibs(cmdString string) string {
 	return res
 }
 
-func (g *Gopal) DeleteTemporaryPath() {
+func (g *Golpal) DeleteTemporaryPath() {
 	os.RemoveAll(g.temporaryFolderPath)
 }
 
-func (g *Gopal) AddLibs(libs ...string) *Gopal {
+func (g *Golpal) AddLibs(libs ...string) *Golpal {
 	g.libs = append(g.libs, libs...)
 	return g
 }
 
-func (g *Gopal) ExecuteSimple(cmdString string) (string, error) {
+func (g *Golpal) ExecuteSimple(cmdString string) (string, error) {
 	defer g.deleteTemporaryPathIfAllowed()
 	cmdString = strings.TrimSpace(cmdString)
 
@@ -209,7 +209,7 @@ func (g *Gopal) ExecuteSimple(cmdString string) (string, error) {
 	return g.runCommand(fileLocation)
 }
 
-func (g *Gopal) Execute(cmdString string) (string, error) {
+func (g *Golpal) Execute(cmdString string) (string, error) {
 	defer g.deleteTemporaryPathIfAllowed()
 	cmdString = strings.TrimSpace(cmdString)
 
@@ -235,7 +235,7 @@ func (g *Gopal) Execute(cmdString string) (string, error) {
 	return g.runCommand(fileLocation)
 }
 
-func (g *Gopal) ExecuteRaw(cmdString string) (string, error) {
+func (g *Golpal) ExecuteRaw(cmdString string) (string, error) {
 	defer g.deleteTemporaryPathIfAllowed()
 	cmdString = strings.TrimSpace(cmdString)
 
