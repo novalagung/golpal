@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Gopal by novalagung</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Gopal</h1>
+      <h2 class="project-tagline">Goapl - Easy to use Golang Exec Library</h2>
+      <a href="https://github.com/novalagung/gopal" class="btn">View on GitHub</a>
+      <a href="https://github.com/novalagung/gopal/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/novalagung/gopal/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="gopal" class="anchor" href="#gopal" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Gopal</h1>
+
+<p>Easy to use Golang Exec Library</p>
+
+<blockquote>
+<p>Stable version: v1.0.0</p>
+</blockquote>
+
+<h2>
+<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p>Gopal is simple library to allow developer exec-ing golang source codes.</p>
+
+<p>Technically Golang doesn't provide API to do some exec, so we use temporary file to achieve that.</p>
+
+<p><a href="https://travis-ci.org/novalagung/gopal"><img src="https://travis-ci.org/novalagung/gopal.png?branch=master" alt="Build Status"></a></p>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Just go get the lib is enough</p>
+
+<div class="highlight highlight-source-shell"><pre>go get -u github.com/novalagung/gopal</pre></div>
+
+<p>Run test</p>
+
+<div class="highlight highlight-source-shell"><pre><span class="pl-c1">cd</span> <span class="pl-smi">$GOPATH</span>/src/github.com/novalagung/gopal
+go <span class="pl-c1">test</span> <span class="pl-k">*</span>.go -v</pre></div>
+
+<h2>
+<a id="example" class="anchor" href="#example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example</h2>
+
+<h4>
+<a id="simple-example" class="anchor" href="#simple-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Simple Example</h4>
+
+<div class="highlight highlight-source-go"><pre><span class="pl-k">package</span> main
+
+<span class="pl-k">import</span> <span class="pl-s"><span class="pl-pds">"</span>github.com/novalagung/gopal<span class="pl-pds">"</span></span>
+<span class="pl-k">import</span> <span class="pl-s"><span class="pl-pds">"</span>fmt<span class="pl-pds">"</span></span>
+
+<span class="pl-k">func</span> <span class="pl-en">main</span>() {
+    <span class="pl-smi">cmdString</span> <span class="pl-k">:=</span> <span class="pl-s"><span class="pl-pds">`</span>3 + 2<span class="pl-pds">`</span></span>
+    <span class="pl-smi">output</span>, <span class="pl-smi">err</span> <span class="pl-k">:=</span> gopal.<span class="pl-c1">New</span>().<span class="pl-c1">ExecuteSimple</span>(cmdString)
+    <span class="pl-k">if</span> err != <span class="pl-c1">nil</span> {
+        fmt.<span class="pl-c1">Println</span>(err)
+    }
+    fmt.<span class="pl-c1">Println</span>(<span class="pl-s"><span class="pl-pds">"</span>result<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>=&gt;<span class="pl-pds">"</span></span>, output)
+}</pre></div>
+
+<h4>
+<a id="another-example" class="anchor" href="#another-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Another Example</h4>
+
+<div class="highlight highlight-source-go"><pre><span class="pl-smi">cmdString</span> <span class="pl-k">:=</span> <span class="pl-s"><span class="pl-pds">`</span></span>
+<span class="pl-s">    number := 3</span>
+<span class="pl-s">    if number == 2 {</span>
+<span class="pl-s">        fmt.Println("wrong")</span>
+<span class="pl-s">    } else {</span>
+<span class="pl-s">        fmt.Println("right")</span>
+<span class="pl-s">    }</span>
+<span class="pl-s"><span class="pl-pds">`</span></span>
+
+<span class="pl-smi">output</span>, <span class="pl-smi">err</span> <span class="pl-k">:=</span> gopal.<span class="pl-c1">New</span>().<span class="pl-c1">ExecuteSimple</span>(cmdString)
+<span class="pl-k">if</span> err != <span class="pl-c1">nil</span> {
+    fmt.<span class="pl-c1">Println</span>(err)
+}
+fmt.<span class="pl-c1">Println</span>(<span class="pl-s"><span class="pl-pds">"</span>result<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>=&gt;<span class="pl-pds">"</span></span>, output)</pre></div>
+
+<h4>
+<a id="example-which-use-strings-and-runtime" class="anchor" href="#example-which-use-strings-and-runtime" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example which use <code>strings</code> and <code>runtime</code>
+</h4>
+
+<div class="highlight highlight-source-go"><pre><span class="pl-smi">cmdString</span> <span class="pl-k">:=</span> <span class="pl-s"><span class="pl-pds">`</span></span>
+<span class="pl-s">    osName := runtime.GOOS</span>
+<span class="pl-s">    arr := []string{"my", "operation system", "is", osName}</span>
+<span class="pl-s">    return strings.Join(arr, ", ")</span>
+<span class="pl-s"><span class="pl-pds">`</span></span>
+
+<span class="pl-smi">output</span>, <span class="pl-smi">err</span> <span class="pl-k">:=</span> gopal.<span class="pl-c1">New</span>().<span class="pl-c1">AddLibs</span>(<span class="pl-s"><span class="pl-pds">"</span>strings<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>runtime<span class="pl-pds">"</span></span>).<span class="pl-c1">ExecuteSimple</span>(cmdString)
+<span class="pl-k">if</span> err != <span class="pl-c1">nil</span> {
+    fmt.<span class="pl-c1">Println</span>(err)
+}
+fmt.<span class="pl-c1">Println</span>(<span class="pl-s"><span class="pl-pds">"</span>result<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>=&gt;<span class="pl-pds">"</span></span>, output)</pre></div>
+
+<h4>
+<a id="example-not-simple-again-not-simple-by-using-execute-func" class="anchor" href="#example-not-simple-again-not-simple-by-using-execute-func" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example Not Simple (again, NOT SIMPLE, by using <code>Execute()</code> func)</h4>
+
+<div class="highlight highlight-source-go"><pre><span class="pl-smi">cmdString</span> <span class="pl-k">:=</span> <span class="pl-s"><span class="pl-pds">`</span></span>
+<span class="pl-s">    func calculate(values ...int) int {</span>
+<span class="pl-s">        total := 0</span>
+<span class="pl-s">        for _, each := range values {</span>
+<span class="pl-s">            total = total + each</span>
+<span class="pl-s">        }</span>
+<span class="pl-s">        return total</span>
+<span class="pl-s">    }</span>
+<span class="pl-s"></span>
+<span class="pl-s">    func main() {</span>
+<span class="pl-s">        res := calculate(1, 2, 3, 4, 2, 3, 1)</span>
+<span class="pl-s">        fmt.Printf("total : %d", res)</span>
+<span class="pl-s">    }</span>
+<span class="pl-s"><span class="pl-pds">`</span></span>
+
+<span class="pl-smi">output</span>, <span class="pl-smi">err</span> <span class="pl-k">:=</span> gopal.<span class="pl-c1">New</span>().<span class="pl-c1">Execute</span>(cmdString)
+<span class="pl-k">if</span> err != <span class="pl-c1">nil</span> {
+    fmt.<span class="pl-c1">Println</span>(err)
+}
+fmt.<span class="pl-c1">Println</span>(<span class="pl-s"><span class="pl-pds">"</span>result<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>=&gt;<span class="pl-pds">"</span></span>, output)</pre></div>
+
+<h4>
+<a id="example-execute-raw-use-executeraw-func" class="anchor" href="#example-execute-raw-use-executeraw-func" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example Execute Raw (use <code>ExecuteRaw()</code> func)</h4>
+
+<div class="highlight highlight-source-go"><pre><span class="pl-smi">cmdString</span> <span class="pl-k">:=</span> <span class="pl-s"><span class="pl-pds">`</span></span>
+<span class="pl-s">    package main</span>
+<span class="pl-s"></span>
+<span class="pl-s">    import "fmt"</span>
+<span class="pl-s"></span>
+<span class="pl-s">    func main() {</span>
+<span class="pl-s">        fmt.Print("hello")</span>
+<span class="pl-s">    }</span>
+<span class="pl-s"><span class="pl-pds">`</span></span>
+
+<span class="pl-smi">output</span>, <span class="pl-smi">err</span> <span class="pl-k">:=</span> gopal.<span class="pl-c1">New</span>().<span class="pl-c1">ExecuteRaw</span>(cmdString)
+<span class="pl-k">if</span> err != <span class="pl-c1">nil</span> {
+    fmt.<span class="pl-c1">Println</span>(err)
+}
+fmt.<span class="pl-c1">Println</span>(<span class="pl-s"><span class="pl-pds">"</span>result<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>=&gt;<span class="pl-pds">"</span></span>, output)</pre></div>
+
+<h4>
+<a id="more-example" class="anchor" href="#more-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>More Example</h4>
+
+<p>For more examples please take a look at the <a href="https://github.com/novalagung/gopal/blob/master/gopal_test.go"><code>gopal_test.go</code> file</a>.</p>
+
+<h2>
+<a id="api-reference" class="anchor" href="#api-reference" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>API Reference</h2>
+
+<h4>
+<a id="func-of-gopal" class="anchor" href="#func-of-gopal" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Func of <code>gopal</code>
+</h4>
+
+<p>There are only one func available, <code>gopal.New()</code> which return object that type is <code>*gopal.Gopal</code></p>
+
+<table>
+<thead>
+<tr>
+<th>Func</th>
+<th align="left">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gopal.New()</td>
+<td align="left">instantiate new <code>*gopal.Gopal</code> object</td>
+</tr>
+</tbody>
+</table>
+
+<h4>
+<a id="property-of-gopalgopal" class="anchor" href="#property-of-gopalgopal" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Property of <code>*gopal.Gopal</code>
+</h4>
+
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th align="left">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.WillDeleteTemporaryFile</td>
+<td><code>bool</code></td>
+<td align="left">Determine if temporary path will be deleted or not after executing the source codes (default is <code>true</code>)</td>
+</tr>
+<tr>
+<td>.TemporaryFolderName</td>
+<td><code>string</code></td>
+<td align="left">Name of temporary folder used to store all <code>*.go</code> temp files (default is <code>.temp</code> for <em>\</em>nix* / *d<em>rwin</em>, and <code>temp</code> for <em>w\</em>ndows*)</td>
+</tr>
+</tbody>
+</table>
+
+<h4>
+<a id="methods-of-gopalgopal" class="anchor" href="#methods-of-gopalgopal" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Methods of <code>*gopal.Gopal</code>
+</h4>
+
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th align="left">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.AddLibs(libs ...string)</td>
+<td align="left">Add other libraries, by default only <code>fmt</code> is included</td>
+</tr>
+<tr>
+<td>.ExecuteSimple(cmdString string)</td>
+<td align="left">Run golang source codes. The code will be placed inside virtual <code>main()</code> func</td>
+</tr>
+<tr>
+<td>.Execute(cmdString string)</td>
+<td align="left">Run golang source codes which contains <code>main()</code> func</td>
+</tr>
+<tr>
+<td>.ExecuteRaw(cmdString string)</td>
+<td align="left">Run complete golang source code</td>
+</tr>
+<tr>
+<td>.DeleteTemporaryPath()</td>
+<td align="left">Force delete temporary path which used to do the exec process</td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="contribution" class="anchor" href="#contribution" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contribution</h2>
+
+<p>Feel free to contribute</p>
+
+<p><code>fork</code> -&gt; <code>commit</code> -&gt; <code>push</code> -&gt; <code>pull request</code></p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
+
+<p>MIT License</p>
+
+<h2>
+<a id="author" class="anchor" href="#author" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Author</h2>
+
+<p>Noval Agung Prayogo - <a href="http://novalagung.com">http://novalagung.com/</a></p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/novalagung/gopal">Gopal</a> is maintained by <a href="https://github.com/novalagung">novalagung</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
