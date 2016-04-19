@@ -10,7 +10,6 @@ Gopal is simple library to allow developer exec-ing golang source codes.
 Technically Golang doesn't provide API to do some exec, so we use temporary file to achieve that.
 
 [![Build Status](https://travis-ci.org/novalagung/gopal.png?branch=master)](https://travis-ci.org/novalagung/gopal)
-[![Version](http://img.shields.io/cocoapods/v/gopal.svg)](http://cocoadocs.org/docsets/gopal)
 
 ## Installation
 
