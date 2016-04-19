@@ -2,6 +2,7 @@
 
 Easy to use Golang Exec Library
 
+> Stable version: v1.0.0
 
 ## Introduction
 
