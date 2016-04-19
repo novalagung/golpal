@@ -39,7 +39,7 @@ const (
 	defaultPerm                = 0755
 	rawConstLibs               = `__LIBS__`
 	rawConstCmd                = `__CMD__`
-	RrawConstMain              = `__MAIN__`
+	rawConstMain               = `__MAIN__`
 )
 
 type Gopal struct {
@@ -198,7 +198,7 @@ func (g *Gopal) ExecuteSimple(cmdString string) (string, error) {
 	}
 
 	cmdString = strings.Replace(rawSimple, rawConstCmd, cmdString, -1)
-	cmdString = strings.Replace(cmdString, RrawConstMain, callDoStuffString, -1)
+	cmdString = strings.Replace(cmdString, rawConstMain, callDoStuffString, -1)
 	cmdString = g.renderLibs(cmdString)
 
 	if _, err := file.WriteString(cmdString); err != nil {
