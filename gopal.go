@@ -1,3 +1,9 @@
+/*
+ * Gopal - Golang Exec Library
+ * Created by Noval Agung Prayogo <caknopal@gmail.com>
+ * http://novalagung.com/
+ */
+
 package gopal
 
 import "fmt"
@@ -10,7 +16,7 @@ import "time"
 import "errors"
 import "strings"
 
-var rawSimple = `package main
+const rawSimple = `package main
 import (
 	__LIBS__
 )
@@ -21,7 +27,12 @@ func main() {
 	__MAIN__
 }`
 
-type ExecType int
+const rawAdvance = `package main
+import (
+	__LIBS__
+)
+
+__CMD__`
 
 const (
 	defaultDeleteTemporaryFile = true
@@ -32,7 +43,6 @@ const (
 )
 
 type Gopal struct {
-	Type                    ExecType
 	WillDeleteTemporaryFile bool
 	TemporaryFolderName     string
 
@@ -147,6 +157,14 @@ func (g *Gopal) ExecuteSimple(cmdString string) (string, error) {
 	defer g.DeleteTemporaryPathIfAllowed()
 	cmdString = strings.TrimSpace(cmdString)
 
+	if strings.HasPrefix(cmdString, "package") {
+		return "", errors.New("Use `ExecuteRaw()` to exec complete golang file")
+	}
+
+	if strings.HasPrefix(cmdString, "func") {
+		return "", errors.New("Use `Execute()` to exec code which contains `main()` func")
+	}
+
 	fileLocation, file, err := g.prepareTemporaryFile()
 	if file != nil {
 		defer file.Close()
@@ -182,6 +200,51 @@ func (g *Gopal) ExecuteSimple(cmdString string) (string, error) {
 	cmdString = strings.Replace(rawSimple, rawConstCmd, cmdString, -1)
 	cmdString = strings.Replace(cmdString, RrawConstMain, callDoStuffString, -1)
 	cmdString = g.renderLibs(cmdString)
+
+	if _, err := file.WriteString(cmdString); err != nil {
+		return "", err
+	}
+
+	return g.runCommand(fileLocation)
+}
+
+func (g *Gopal) Execute(cmdString string) (string, error) {
+	defer g.DeleteTemporaryPathIfAllowed()
+	cmdString = strings.TrimSpace(cmdString)
+
+	if strings.HasPrefix(cmdString, "package") {
+		return "", errors.New("Use `ExecuteRaw()` to exec complete golang file")
+	}
+
+	fileLocation, file, err := g.prepareTemporaryFile()
+	if file != nil {
+		defer file.Close()
+	}
+	if err != nil {
+		return "", err
+	}
+
+	cmdString = strings.Replace(rawAdvance, rawConstCmd, cmdString, -1)
+	cmdString = g.renderLibs(cmdString)
+
+	if _, err := file.WriteString(cmdString); err != nil {
+		return "", err
+	}
+
+	return g.runCommand(fileLocation)
+}
+
+func (g *Gopal) ExecuteRaw(cmdString string) (string, error) {
+	defer g.DeleteTemporaryPathIfAllowed()
+	cmdString = strings.TrimSpace(cmdString)
+
+	fileLocation, file, err := g.prepareTemporaryFile()
+	if file != nil {
+		defer file.Close()
+	}
+	if err != nil {
+		return "", err
+	}
 
 	if _, err := file.WriteString(cmdString); err != nil {
 		return "", err

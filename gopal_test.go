@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestSimpleCommand(t *testing.T) {
+func TestExecuteSimple(t *testing.T) {
 	cmdString := `3 + 2`
 	output, err := New().ExecuteSimple(cmdString)
 	if err != nil {
@@ -13,7 +13,7 @@ func TestSimpleCommand(t *testing.T) {
 	t.Log("result", "=>", output)
 }
 
-func TestSimpleCommandWithReturn(t *testing.T) {
+func TestExecuteSimpleWithReturn(t *testing.T) {
 	cmdString := `return 3 + 2`
 	output, err := New().ExecuteSimple(cmdString)
 	if err != nil {
@@ -22,7 +22,7 @@ func TestSimpleCommandWithReturn(t *testing.T) {
 	t.Log("result", "=>", output)
 }
 
-func TestSimpleCommandWithFmt(t *testing.T) {
+func TestExecuteSimpleWithFmt(t *testing.T) {
 	cmdString := `fmt.Println(3 + 2)`
 	output, err := New().ExecuteSimple(cmdString)
 	if err != nil {
@@ -31,10 +31,10 @@ func TestSimpleCommandWithFmt(t *testing.T) {
 	t.Log("result", "=>", output)
 }
 
-func TestSimpleCommandIfElse(t *testing.T) {
+func TestExecuteSimpleIfElse(t *testing.T) {
 	cmdString := `
-temp := 3
-if temp == 2 {
+number := 3
+if number == 2 {
 	fmt.Println("wrong")
 } else {
 	fmt.Println("right")
@@ -47,7 +47,7 @@ if temp == 2 {
 	t.Log("result", "=>", output)
 }
 
-func TestSimpleCommandWithOtherLib(t *testing.T) {
+func TestExecuteSimpleWithOtherLibs(t *testing.T) {
 	cmdString := `
 osName := runtime.GOOS
 arr := []string{"my", "operation system", "is", osName}
@@ -60,7 +60,7 @@ return strings.Join(arr, ", ")`
 	t.Log("result", "=>", output)
 }
 
-func TestSimpleCommandWithManualDeleteTemporaryPath(t *testing.T) {
+func TestExecuteSimpleWithManualDeleteTemporaryPath(t *testing.T) {
 	cmdsString := []string{"1 + 2", "2 + 3", "3 + 4", "4 + 5"}
 
 	g := New()
@@ -75,4 +75,79 @@ func TestSimpleCommandWithManualDeleteTemporaryPath(t *testing.T) {
 	}
 
 	g.DeleteTemporaryPath()
+}
+
+func TestExecute(t *testing.T) {
+	cmdString := `
+func calculate(values ...int) int {
+	total := 0
+	for _, each := range values {
+		total = total + each
+	}
+	return total
+}
+
+func main() {
+	res := calculate(1, 2, 3, 4, 2, 3, 1)
+	fmt.Printf("total : %d", res)
+}`
+
+	output, err := New().Execute(cmdString)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log("result", "=>", output)
+}
+
+func TestExecuteWithOtherLibs(t *testing.T) {
+	cmdString := `
+func rand() string {
+	timestamp := time.Now().UnixNano()
+	timestampString := fmt.Sprintf("%d", timestamp)
+	result := strings.Replace(timestampString, "0", "o", -1)
+	return result
+}
+
+func main() {
+	random := rand()
+	fmt.Print(random)
+}`
+
+	output, err := New().AddLibs("time", "strings").Execute(cmdString)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log("result", "=>", output)
+}
+
+func TestExecuteRaw(t *testing.T) {
+	cmdString := `
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Print("hello")
+}`
+
+	output, err := New().ExecuteRaw(cmdString)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log("result", "=>", output)
+}
+
+func TestWrongMethod(t *testing.T) {
+	cmdString := `
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Print("hello")
+}`
+
+	if _, err := New().ExecuteSimple(cmdString); err != nil {
+		t.Log(err.Error())
+	}
 }
