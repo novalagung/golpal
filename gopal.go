@@ -96,16 +96,12 @@ func (g *Gopal) prepareTemporaryFile() (string, *os.File, error) {
 	return fileLocation, file, err
 }
 
-func (g *Gopal) DeleteTemporaryPathIfAllowed() {
+func (g *Gopal) deleteTemporaryPathIfAllowed() {
 	if !g.WillDeleteTemporaryFile {
 		return
 	}
 
 	g.DeleteTemporaryPath()
-}
-
-func (g *Gopal) DeleteTemporaryPath() {
-	os.RemoveAll(g.temporaryFolderPath)
 }
 
 func (g *Gopal) runCommand(fileLocation string) (string, error) {
@@ -148,13 +144,17 @@ func (g *Gopal) renderLibs(cmdString string) string {
 	return res
 }
 
+func (g *Gopal) DeleteTemporaryPath() {
+	os.RemoveAll(g.temporaryFolderPath)
+}
+
 func (g *Gopal) AddLibs(libs ...string) *Gopal {
 	g.libs = append(g.libs, libs...)
 	return g
 }
 
 func (g *Gopal) ExecuteSimple(cmdString string) (string, error) {
-	defer g.DeleteTemporaryPathIfAllowed()
+	defer g.deleteTemporaryPathIfAllowed()
 	cmdString = strings.TrimSpace(cmdString)
 
 	if strings.HasPrefix(cmdString, "package") {
@@ -209,7 +209,7 @@ func (g *Gopal) ExecuteSimple(cmdString string) (string, error) {
 }
 
 func (g *Gopal) Execute(cmdString string) (string, error) {
-	defer g.DeleteTemporaryPathIfAllowed()
+	defer g.deleteTemporaryPathIfAllowed()
 	cmdString = strings.TrimSpace(cmdString)
 
 	if strings.HasPrefix(cmdString, "package") {
@@ -235,7 +235,7 @@ func (g *Gopal) Execute(cmdString string) (string, error) {
 }
 
 func (g *Gopal) ExecuteRaw(cmdString string) (string, error) {
-	defer g.DeleteTemporaryPathIfAllowed()
+	defer g.deleteTemporaryPathIfAllowed()
 	cmdString = strings.TrimSpace(cmdString)
 
 	fileLocation, file, err := g.prepareTemporaryFile()
