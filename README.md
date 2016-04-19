@@ -1,4 +1,4 @@
-<img align="right" width="440" alt="Gopal logo" src="https://cloud.githubusercontent.com/assets/982868/14644612/d777600e-067c-11e6-997e-090e1bd6c49e.png">
+<img align="right" width="440" alt="Gopal logo" src="https://cloud.githubusercontent.com/assets/982868/14644972/14fd4faa-067e-11e6-97db-d9b18cdf6c4b.png">
 
 # Gopal
 
