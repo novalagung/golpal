@@ -1,6 +1,6 @@
-# Golpal
-
 <img align="right" width="400" alt="Golpal logo" src="https://raw.githubusercontent.com/novalagung/golpal/master/golpal.png">
+
+# Golpal
 
 Easy to use Golang Exec Library
 
