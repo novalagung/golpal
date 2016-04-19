@@ -133,6 +133,30 @@ For more examples please take a look at the [`gopal_test.go` file](https://githu
 
 ### API Reference
 
+##### Func of `gopal`
+
+There are only one func available, `New()`
+
+| Func        | Usage          |
+| ----------- | :------------- |
+| gopal.New() | instantiate new `*gopal.Gopal` object |
+
+##### Property of `*gopal.Gopal`
+
+| Property    | Type | Usage          |
+| ----------- | ---- | :------------- |
+| .WillDeleteTemporaryFile | `bool` | Determine if temporary path will be deleted or not after executing the source codes (default is `true`) |
+| .TemporaryFolderName | `string` | Name of temporary folder used to store all `*.go` temp files (default is `.temp` for *\*nix* / \*d*rwin*, and `temp` for *w\*ndows*) | Run golang source codes. The code will be placed inside virtual `main()` func |
+
+##### Methods of `*gopal.Gopal`
+
+| Method      | Usage          |
+| ----------- | :------------- |
+| .AddLibs(libs ...string) | Add other libraries, by default only `fmt` is included |
+| .ExecuteSimple(cmdString string) | Run golang source codes. The code will be placed inside virtual `main()` func |
+| .Execute(cmdString string) | Run golang source codes which contains `main()` func |
+| .ExecuteRaw(cmdString string) | Run complete golang source code |
+| .DeleteTemporaryPath() | Force delete temporary path which used to do the exec process |
 
 
 ### Contribution
