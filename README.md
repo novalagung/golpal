@@ -135,7 +135,7 @@ For more examples please take a look at the [`gopal_test.go` file](https://githu
 
 ##### Func of `gopal`
 
-There are only one func available, `New()`
+There are only one func available, `gopal.New()` which return object that type is `*gopal.Gopal`
 
 | Func        | Usage          |
 | ----------- | :------------- |
