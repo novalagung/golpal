@@ -35,6 +35,7 @@ import (
 __CMD__`
 
 const (
+	Version                    = "v1.0.0"
 	defaultDeleteTemporaryFile = true
 	defaultPerm                = 0755
 	rawConstLibs               = `__LIBS__`
