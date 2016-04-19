@@ -29,7 +29,7 @@ go test *.go -v
 
 ### Example
 
-##### Simple Example
+#### Simple Example
 
 ```go
 package main
@@ -47,7 +47,7 @@ func main() {
 }
 ```
 
-##### Another Example
+#### Another Example
 
 ```go
 cmdString := `
@@ -66,7 +66,7 @@ if err != nil {
 fmt.Println("result", "=>", output)
 ```
 
-##### Example which use `strings` and `runtime`
+#### Example which use `strings` and `runtime`
 
 ```go
 cmdString := `
@@ -82,7 +82,7 @@ if err != nil {
 fmt.Println("result", "=>", output)
 ```
 
-##### Example Not Simple (again, NOT SIMPLE, by using `Execute()` func)
+#### Example Not Simple (again, NOT SIMPLE, by using `Execute()` func)
 
 ```go
 cmdString := `
@@ -107,7 +107,7 @@ if err != nil {
 fmt.Println("result", "=>", output)
 ```
 
-##### Example Execute Raw (use `ExecuteRaw()` func)
+#### Example Execute Raw (use `ExecuteRaw()` func)
 
 ```go
 cmdString := `
@@ -127,13 +127,13 @@ if err != nil {
 fmt.Println("result", "=>", output)
 ```
 
-##### More Example
+#### More Example
 
 For more examples please take a look at the [`gopal_test.go` file](https://github.com/novalagung/gopal/blob/master/gopal_test.go).
 
 ### API Reference
 
-##### Func of `gopal`
+#### Func of `gopal`
 
 There are only one func available, `gopal.New()` which return object that type is `*gopal.Gopal`
 
@@ -141,14 +141,14 @@ There are only one func available, `gopal.New()` which return object that type i
 | ----------- | :------------- |
 | gopal.New() | instantiate new `*gopal.Gopal` object |
 
-##### Property of `*gopal.Gopal`
+#### Property of `*gopal.Gopal`
 
 | Property    | Type | Usage          |
 | ----------- | ---- | :------------- |
 | .WillDeleteTemporaryFile | `bool` | Determine if temporary path will be deleted or not after executing the source codes (default is `true`) |
 | .TemporaryFolderName | `string` | Name of temporary folder used to store all `*.go` temp files (default is `.temp` for *\*nix* / \*d*rwin*, and `temp` for *w\*ndows*) | Run golang source codes. The code will be placed inside virtual `main()` func |
 
-##### Methods of `*gopal.Gopal`
+#### Methods of `*gopal.Gopal`
 
 | Method      | Usage          |
 | ----------- | :------------- |
