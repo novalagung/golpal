@@ -20,6 +20,13 @@ Just go get the lib is enough
 go get -u github.com/novalagung/gopal
 ```
 
+Run test
+
+```bash
+cd $GOPATH/src/github.com/novalagung/gopal
+go test *.go -v
+```
+
 ### Example
 
 ##### Simple Example
