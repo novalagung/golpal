@@ -1,4 +1,4 @@
-<img align="right" alt="Golpal logo" src="https://raw.githubusercontent.com/novalagung/golpal/master/golpal.png">
+<img align="right" alt="Golpal logo" src="https://raw.githubusercontent.com/novalagung/golpal/master/logo.png">
 
 # Golpal
 
