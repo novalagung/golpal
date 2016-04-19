@@ -108,8 +108,16 @@ func (g *Golpal) deleteTemporaryPathIfAllowed() {
 func (g *Golpal) runCommand(fileLocation string) (string, error) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
+	var cmd *exec.Cmd
 
-	cmd := exec.Command("go", "run", fileLocation)
+	goRun := fmt.Sprintf("go run %s", fileLocation)
+
+	if runtime.GOOS == "windows" {
+		cmd = exec.Command("cmd", "/C", goRun)
+	} else {
+		cmd = exec.Command("bash", "-c", goRun)
+	}
+
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 
