@@ -10,18 +10,10 @@ import "time"
 import "errors"
 import "strings"
 
-var TemporaryFolderName = (func(os string) string {
-	if os == "windows" {
-		return "temp"
-	}
-
-	return ".temp"
-}(runtime.GOOS))
-
-var DeleteTemporaryFile = true
-
 var rawSimple = `package main
-import "fmt"
+import (
+	__LIBS__
+)
 func doStuff() interface{} {
 	__CMD__
 }
@@ -29,33 +21,84 @@ func main() {
 	__MAIN__
 }`
 
-var basePath = (func(dir string, err error) string {
-	return dir
-}(os.Getwd()))
+type ExecType int
 
-var temporaryFolderPath = filepath.Join(basePath, TemporaryFolderName)
+const (
+	defaultDeleteTemporaryFile = true
+	defaultPerm                = 0755
+	rawConstLibs               = `__LIBS__`
+	rawConstCmd                = `__CMD__`
+	RrawConstMain              = `__MAIN__`
+)
 
-const DEFAULT_PERM = 0755
+type Gopal struct {
+	Type                    ExecType
+	WillDeleteTemporaryFile bool
+	TemporaryFolderName     string
 
-func prepareTemporaryFile() (string, *os.File, error) {
+	temporaryFolderPath string
+	libs                []string
+}
+
+func New() *Gopal {
+	g := new(Gopal)
+	g.WillDeleteTemporaryFile = defaultDeleteTemporaryFile
+	g.prepareDefaultTemporaryFolderName()
+	g.prepareDefaultLibs()
+
+	return g
+}
+
+func (g *Gopal) prepareDefaultTemporaryFolderName() {
+	if runtime.GOOS == "windows" {
+		g.TemporaryFolderName = "temp"
+	}
+
+	g.TemporaryFolderName = ".temp"
+}
+
+func (g *Gopal) prepareDefaultLibs() {
+	g.libs = []string{"fmt"}
+}
+
+func (g *Gopal) prepareTemporaryFolderPath() {
+	basePath, _ := os.Getwd()
+	g.temporaryFolderPath = filepath.Join(basePath, g.TemporaryFolderName)
+}
+
+func (g *Gopal) prepareTemporaryFile() (string, *os.File, error) {
+	g.prepareTemporaryFolderPath()
+
 	filename := fmt.Sprintf("temp-%d.go", time.Now().UnixNano())
-	fileLocation := filepath.Join(temporaryFolderPath, filename)
+	fileLocation := filepath.Join(g.temporaryFolderPath, filename)
 
-	folder, err := os.Open(temporaryFolderPath)
+	folder, err := os.Open(g.temporaryFolderPath)
 	if folder != nil {
 		defer folder.Close()
 	}
 	if os.IsNotExist(err) {
-		if err := os.Mkdir(temporaryFolderPath, DEFAULT_PERM); err != nil {
+		if err := os.Mkdir(g.temporaryFolderPath, defaultPerm); err != nil {
 			return fileLocation, nil, err
 		}
 	}
 
-	file, err := os.OpenFile(fileLocation, os.O_CREATE|os.O_WRONLY, DEFAULT_PERM)
+	file, err := os.OpenFile(fileLocation, os.O_CREATE|os.O_WRONLY, defaultPerm)
 	return fileLocation, file, err
 }
 
-func runCommand(fileLocation string) (string, error) {
+func (g *Gopal) DeleteTemporaryPathIfAllowed() {
+	if !g.WillDeleteTemporaryFile {
+		return
+	}
+
+	g.DeleteTemporaryPath()
+}
+
+func (g *Gopal) DeleteTemporaryPath() {
+	os.RemoveAll(g.temporaryFolderPath)
+}
+
+func (g *Gopal) runCommand(fileLocation string) (string, error) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
@@ -66,7 +109,7 @@ func runCommand(fileLocation string) (string, error) {
 	if err := cmd.Run(); err != nil {
 		errString := err.Error()
 		if stderr.Len() > 0 {
-			errString = fmt.Sprintf("%s%s", fmt.Sprintln(errString), stderr.String())
+			errString = fmt.Sprintf("%s\n%s", errString, stderr.String())
 		}
 
 		return "", errors.New(strings.TrimSpace(errString))
@@ -75,25 +118,41 @@ func runCommand(fileLocation string) (string, error) {
 	return strings.TrimSpace(stdout.String()), nil
 }
 
-func deleteTemporaryPath() {
-	if !DeleteTemporaryFile {
-		return
+func (g *Gopal) renderLibs(cmdString string) string {
+	quotedLibString := []string{}
+
+	for _, each := range g.libs {
+		if !strings.HasPrefix(`"`, each) {
+			each = fmt.Sprintf(`"%s`, each)
+		}
+		if !strings.HasSuffix(`"`, each) {
+			each = fmt.Sprintf(`%s"`, each)
+		}
+
+		quotedLibString = append(quotedLibString, each)
 	}
 
-	os.RemoveAll(temporaryFolderPath)
+	libsString := strings.Join(quotedLibString, "\n")
+	res := strings.Replace(cmdString, rawConstLibs, libsString, -1)
+
+	return res
 }
 
-func ExecuteSimple(cmdString string) (string, error) {
-	defer deleteTemporaryPath()
+func (g *Gopal) AddLibs(libs ...string) *Gopal {
+	g.libs = append(g.libs, libs...)
+	return g
+}
+
+func (g *Gopal) ExecuteSimple(cmdString string) (string, error) {
+	defer g.DeleteTemporaryPathIfAllowed()
 	cmdString = strings.TrimSpace(cmdString)
 
-	output := ""
-	fileLocation, file, err := prepareTemporaryFile()
+	fileLocation, file, err := g.prepareTemporaryFile()
 	if file != nil {
 		defer file.Close()
 	}
 	if err != nil {
-		return output, err
+		return "", err
 	}
 
 	hasPrint := (func() bool {
@@ -106,24 +165,27 @@ func ExecuteSimple(cmdString string) (string, error) {
 		return false
 	}())
 
-	callDoStuff := `doStuff()`
+	callDoStuffString := `doStuff()`
 
 	if !hasPrint {
-		callDoStuff = fmt.Sprintf(`fmt.Print(%s)`, callDoStuff)
+		callDoStuffString = fmt.Sprintf(`fmt.Print(%s)`, callDoStuffString)
 
-		if !strings.HasPrefix(cmdString, "return") {
-			cmdString = fmt.Sprintf("return %s", cmdString)
+		if !strings.Contains(cmdString, "return") {
+			cmdPart := strings.Split(cmdString, "\n")
+			cmdPart[len(cmdPart)-1] = fmt.Sprintf("return %s", cmdString)
+			cmdString = strings.Join(cmdPart, "\n")
 		}
 	} else {
-		cmdString = fmt.Sprintf("%sreturn true", fmt.Sprintln(cmdString))
+		cmdString = fmt.Sprintf("%s\nreturn true", cmdString)
 	}
 
-	cmdString = strings.Replace(rawSimple, `__CMD__`, cmdString, -1)
-	cmdString = strings.Replace(cmdString, `__MAIN__`, callDoStuff, -1)
+	cmdString = strings.Replace(rawSimple, rawConstCmd, cmdString, -1)
+	cmdString = strings.Replace(cmdString, RrawConstMain, callDoStuffString, -1)
+	cmdString = g.renderLibs(cmdString)
 
 	if _, err := file.WriteString(cmdString); err != nil {
 		return "", err
 	}
 
-	return runCommand(fileLocation)
+	return g.runCommand(fileLocation)
 }
