@@ -32,7 +32,7 @@ import "fmt"
 
 func main() {
 	cmdString := `3 + 2`
-	output, err := New().ExecuteSimple(cmdString)
+	output, err := gopal.New().ExecuteSimple(cmdString)
 	if err != nil {
 		fmt.Println(err)
 	}
