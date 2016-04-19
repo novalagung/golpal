@@ -1,5 +1,7 @@
 # Golpal
 
+<img align="right" width="400" alt="Gopal logo" src="https://cloud.githubusercontent.com/assets/982868/14644972/14fd4faa-067e-11e6-97db-d9b18cdf6c4b.png">
+
 Easy to use Golang Exec Library
 
 > Stable version: v1.0.0
