@@ -165,7 +165,10 @@ Feel free to contribute
 
 `fork` -> `commit` -> `push` -> `pull request`
 
-
 ## License
 
 MIT License
+
+## Author
+
+Noval Agung Prayogo - [http://novalagung.com/](http://novalagung.com)
