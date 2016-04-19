@@ -1,3 +1,5 @@
+<img align="right" width="440" alt="Gopal logo" src="https://cloud.githubusercontent.com/assets/982868/14644612/d777600e-067c-11e6-997e-090e1bd6c49e.png">
+
 # Gopal
 
 Easy to use Golang Exec Library
