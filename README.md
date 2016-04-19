@@ -6,9 +6,7 @@ Easy to use Golang Exec Library
 
 ## Introduction
 
-Golpal is simple library to allow developer exec-ing golang source codes.
-
-Technically Golang doesn't provide API to do some exec, so we use temporary file to achieve that.
+Golpal is simple library to allow developer exec-ing golang source codes. Technically Golang doesn't provide API to do some exec, so we use temporary file to achieve that.
 
 [![Build Status](https://travis-ci.org/novalagung/golpal.png?branch=master)](https://travis-ci.org/novalagung/golpal)
 
