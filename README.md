@@ -153,7 +153,7 @@ There are only one func available, `gopal.New()` which return object that type i
 | Method      | Usage          |
 | ----------- | :------------- |
 | .AddLibs(libs ...string) | Add other libraries, by default only `fmt` is included |
-| .ExecuteSimple(cmdString string) | Run golang source codes. The code will be placed inside virtual `main()` func |
+| .ExecuteSimple(cmdString&nbsp;string) | Run golang source codes. The code will be placed inside virtual `main()` func |
 | .Execute(cmdString string) | Run golang source codes which contains `main()` func |
 | .ExecuteRaw(cmdString string) | Run complete golang source code |
 | .DeleteTemporaryPath() | Force delete temporary path which used to do the exec process |
