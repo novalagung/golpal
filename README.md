@@ -47,15 +47,17 @@ func main() {
 }
 ```
 
+> For one line statement using `ExecuteSimple()`, `return` keyword is optional
+
 #### Another Example
 
 ```go
 cmdString := `
 	number := 3
 	if number == 2 {
-		fmt.Println("wrong")
+		return "wrong"
 	} else {
-		fmt.Println("right")
+		return "right"
 	}
 `
 
@@ -65,6 +67,8 @@ if err != nil {
 }
 fmt.Println("result", "=>", output)
 ```
+
+> For multiline statement using `ExecuteSimple()`, `return` must be defined
 
 #### Example which use `strings` and `runtime`
 
@@ -153,7 +157,7 @@ There are only one func available, `golpal.New()` which return object that type 
 | Method      | Usage          |
 | ----------- | :------------- |
 | .AddLibs(libs ...string) | Add other libraries, by default only `fmt` is included |
-| .ExecuteSimple(cmdString&nbsp;string) | Run golang source codes. The code will be placed inside virtual `main()` func |
+| .ExecuteSimple(cmdString&nbsp;string) | Run golang source codes. The code will be placed inside virtual `main()` func. This function doesn't allow `fmt.Print*()`. Also for multiline statement, `return` must be defined |
 | .Execute(cmdString string) | Run golang source codes which contains `main()` func |
 | .ExecuteRaw(cmdString string) | Run complete golang source code |
 | .DeleteTemporaryPath() | Force delete temporary path which used to do the exec process |
