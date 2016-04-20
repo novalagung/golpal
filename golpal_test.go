@@ -28,22 +28,13 @@ func TestExecuteSimpleWithReturn(t *testing.T) {
 	t.Log("result", "=>", output)
 }
 
-func TestExecuteSimpleWithFmt(t *testing.T) {
-	cmdString := `fmt.Println(3 + 2)`
-	output, err := New().ExecuteSimple(cmdString)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Log("result", "=>", output)
-}
-
-func TestExecuteSimpleIfElse(t *testing.T) {
+func TestExecuteSimpleIfElseWithReturn(t *testing.T) {
 	cmdString := `
 number := 3
 if number == 2 {
-	fmt.Println("wrong")
+	return "wrong"
 } else {
-	fmt.Println("right")
+	return "not always right"
 }`
 
 	output, err := New().ExecuteSimple(cmdString)

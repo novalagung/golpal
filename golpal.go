@@ -16,7 +16,7 @@ import "time"
 import "errors"
 import "strings"
 
-const rawSimple = `package main
+const rawExecuteSimple = `package main
 import (
 	__LIBS__
 )
@@ -24,10 +24,10 @@ func doStuff() interface{} {
 	__CMD__
 }
 func main() {
-	__MAIN__
+	fmt.Println(doStuff())
 }`
 
-const rawAdvance = `package main
+const rawExecute = `package main
 import (
 	__LIBS__
 )
@@ -40,7 +40,6 @@ const (
 	defaultPerm                = 0755
 	rawConstLibs               = `__LIBS__`
 	rawConstCmd                = `__CMD__`
-	rawConstMain               = `__MAIN__`
 )
 
 type Golpal struct {
@@ -153,6 +152,16 @@ func (g *Golpal) renderLibs(cmdString string) string {
 	return res
 }
 
+func (g *Golpal) containsPrint(cmdString string) bool {
+	for _, each := range []string{"Println", "Printf", "Print"} {
+		if strings.Contains(cmdString, fmt.Sprintf("fmt.%s", each)) {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (g *Golpal) DeleteTemporaryPath() {
 	os.RemoveAll(g.temporaryFolderPath)
 }
@@ -174,6 +183,10 @@ func (g *Golpal) ExecuteSimple(cmdString string) (string, error) {
 		return "", errors.New("Use `Execute()` to exec code which contains `main()` func")
 	}
 
+	if g.containsPrint(cmdString) {
+		return "", errors.New("The code cannot contain fmt.Println(), fmt.Printf(), or fmt.Print()")
+	}
+
 	fileLocation, file, err := g.prepareTemporaryFile()
 	if file != nil {
 		defer file.Close()
@@ -182,32 +195,13 @@ func (g *Golpal) ExecuteSimple(cmdString string) (string, error) {
 		return "", err
 	}
 
-	hasPrint := (func() bool {
-		for _, each := range []string{"Println", "Printf", "Print"} {
-			if strings.Contains(cmdString, fmt.Sprintf("fmt.%s", each)) {
-				return true
-			}
+	if len(strings.Split(cmdString, "\n")) == 1 {
+		if !strings.HasPrefix(cmdString, "return") {
+			cmdString = fmt.Sprintf("return %s", cmdString)
 		}
-
-		return false
-	}())
-
-	callDoStuffString := `doStuff()`
-
-	if !hasPrint {
-		callDoStuffString = fmt.Sprintf(`fmt.Print(%s)`, callDoStuffString)
-
-		if !strings.Contains(cmdString, "return") {
-			cmdPart := strings.Split(cmdString, "\n")
-			cmdPart[len(cmdPart)-1] = fmt.Sprintf("return %s", cmdString)
-			cmdString = strings.Join(cmdPart, "\n")
-		}
-	} else {
-		cmdString = fmt.Sprintf("%s\nreturn true", cmdString)
 	}
 
-	cmdString = strings.Replace(rawSimple, rawConstCmd, cmdString, -1)
-	cmdString = strings.Replace(cmdString, rawConstMain, callDoStuffString, -1)
+	cmdString = strings.Replace(rawExecuteSimple, rawConstCmd, cmdString, -1)
 	cmdString = g.renderLibs(cmdString)
 
 	if _, err := file.WriteString(cmdString); err != nil {
@@ -233,7 +227,7 @@ func (g *Golpal) Execute(cmdString string) (string, error) {
 		return "", err
 	}
 
-	cmdString = strings.Replace(rawAdvance, rawConstCmd, cmdString, -1)
+	cmdString = strings.Replace(rawExecute, rawConstCmd, cmdString, -1)
 	cmdString = g.renderLibs(cmdString)
 
 	if _, err := file.WriteString(cmdString); err != nil {
