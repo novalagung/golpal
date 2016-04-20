@@ -6,7 +6,7 @@ Easy to use Golang Eval Library
 
 ## Introduction
 
-Golpal is simple library to allow developer do eval operation golang source codes. Technically Golang doesn't provide API to do some eval, so we use temporary file to achieve that.
+Golpal is simple library to allow developer to do **eval** operation on golang source codes. Technically Golang doesn't provide API to do some eval, so we use temporary file to achieve that.
 
 [![Build Status](https://travis-ci.org/novalagung/golpal.png?branch=master)](https://travis-ci.org/novalagung/golpal)
 
