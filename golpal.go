@@ -1,5 +1,5 @@
 /*
- * Golpal - Easy to use Golang Exec Library
+ * Golpal - Easy to use Golang Eval Library
  * Created by Noval Agung Prayogo <caknopal@gmail.com>
  * http://novalagung.com/
  */

@@ -2,11 +2,11 @@
 
 # Golpal
 
-Easy to use Golang Exec Library
+Easy to use Golang Eval Library
 
 ## Introduction
 
-Golpal is simple library to allow developer exec-ing golang source codes. Technically Golang doesn't provide API to do some exec, so we use temporary file to achieve that.
+Golpal is simple library to allow developer do eval operation golang source codes. Technically Golang doesn't provide API to do some eval, so we use temporary file to achieve that.
 
 [![Build Status](https://travis-ci.org/novalagung/golpal.png?branch=master)](https://travis-ci.org/novalagung/golpal)
 
@@ -141,7 +141,7 @@ There are only one func available, `golpal.New()` which return object that type 
 | ----------- | :------------- |
 | golpal.New() | instantiate new `*golpal.Golpal` object |
 
-#### Property of `*golpal.Golpal`
+#### Properties of `*golpal.Golpal`
 
 | Property    | Type | Usage          |
 | ----------- | ---- | :------------- |
