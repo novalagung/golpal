@@ -198,7 +198,7 @@ func main() {
 
 #### More Example
 
-For more examples please take a look at the [`golpal_test.go` file](https://github.com/novalagung/golpal/blob/master/golpal_test.go) and  [`cli_test.go` file](https://github.com/novalagung/golpal/blob/master/cli_test.go).
+For more examples please take a look at the [`golpal_test.go`](https://github.com/novalagung/golpal/blob/master/golpal_test.go) and  [`cli_test.go`](https://github.com/novalagung/golpal/blob/master/cli_test.go).
 
 
 <h2 id="api-reference">API Reference</h2>
