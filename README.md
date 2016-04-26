@@ -169,6 +169,10 @@ func prepareCmd(cmdString string, args ...string) (*exec.Cmd, *bytes.Buffer, *by
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
+	if runtime.GOOS == "windows" {
+		cmdString = fmt.Sprintf(".exe", cmdString)
+	}
+
 	cmd := exec.Command(cmdString, args...)
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
