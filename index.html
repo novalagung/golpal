@@ -34,6 +34,19 @@
 <p><a href="https://travis-ci.org/novalagung/golpal"><img src="https://travis-ci.org/novalagung/golpal.png?branch=master" alt="Build Status"></a></p>
 
 <h2>
+<a id="table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Table of contents</h2>
+
+<ul>
+<li><a href="#user-content-installation">Installation</a></li>
+<li><a href="#user-content-cli-installation">CLI Installation</a></li>
+<li><a href="#user-content-example">Example</a></li>
+<li><a href="#user-content-api-reference">API Reference</a></li>
+<li><a href="#user-content-contributing">Contributing</a></li>
+<li><a href="#user-content-license">License</a></li>
+<li><a href="#user-content-author">Author</a></li>
+</ul>
+
+<h2 id="installation">
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
 
 <blockquote>
@@ -49,7 +62,24 @@
 <div class="highlight highlight-source-shell"><pre><span class="pl-c1">cd</span> <span class="pl-smi">$GOPATH</span>/src/github.com/novalagung/golpal
 go <span class="pl-c1">test</span> <span class="pl-k">*</span>.go -v</pre></div>
 
-<h2>
+<h2 id="cli-installation">
+<a id="cli-installation" class="anchor" href="#cli-installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>CLI Installation</h2>
+
+<p>By using cli, golpal will run faster. Follow these instructions to install golpal CLI.</p>
+
+<h4>
+<a id="linux" class="anchor" href="#linux" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Linux</h4>
+
+<div class="highlight highlight-source-shell"><pre>sh install_cli.sh
+golpal -content <span class="pl-s"><span class="pl-pds">"</span>3 + 4<span class="pl-pds">"</span></span></pre></div>
+
+<h4>
+<a id="windows" class="anchor" href="#windows" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Windows</h4>
+
+<div class="highlight highlight-source-shell"><pre>install_cli.bat
+golpal.exe -content <span class="pl-s"><span class="pl-pds">"</span>3 + 4<span class="pl-pds">"</span></span></pre></div>
+
+<h2 id="example">
 <a id="example" class="anchor" href="#example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example</h2>
 
 <h4>
@@ -155,11 +185,44 @@ fmt.<span class="pl-c1">Println</span>(<span class="pl-s"><span class="pl-pds">"
 fmt.<span class="pl-c1">Println</span>(<span class="pl-s"><span class="pl-pds">"</span>result<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>=&gt;<span class="pl-pds">"</span></span>, output)</pre></div>
 
 <h4>
+<a id="cli-example" class="anchor" href="#cli-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>CLI Example</h4>
+
+<div class="highlight highlight-source-go"><pre><span class="pl-k">func</span> <span class="pl-en">prepareCmd</span>(<span class="pl-v">cmdString</span> <span class="pl-v">string</span>, <span class="pl-v">args</span> ...<span class="pl-v">string</span>) (*<span class="pl-v">exec</span>.<span class="pl-v">Cmd</span>, *<span class="pl-v">bytes</span>.<span class="pl-v">Buffer</span>, *<span class="pl-v">bytes</span>.<span class="pl-v">Buffer</span>) {
+    <span class="pl-k">var</span> <span class="pl-smi">stdout</span> bytes.<span class="pl-smi">Buffer</span>
+    <span class="pl-k">var</span> <span class="pl-smi">stderr</span> bytes.<span class="pl-smi">Buffer</span>
+
+    <span class="pl-k">if</span> runtime.<span class="pl-smi">GOOS</span> == <span class="pl-s"><span class="pl-pds">"</span>windows<span class="pl-pds">"</span></span> {
+        cmdString = fmt.<span class="pl-c1">Sprintf</span>(<span class="pl-s"><span class="pl-pds">"</span>.exe<span class="pl-pds">"</span></span>, cmdString)
+    }
+
+    <span class="pl-smi">cmd</span> <span class="pl-k">:=</span> exec.<span class="pl-c1">Command</span>(cmdString, args...)
+    cmd.<span class="pl-smi">Stdout</span> = &amp;stdout
+    cmd.<span class="pl-smi">Stderr</span> = &amp;stderr
+
+    <span class="pl-k">return</span> cmd, &amp;stdout, &amp;stderr
+}
+
+<span class="pl-k">func</span> <span class="pl-en">main</span>() {
+    <span class="pl-smi">cmd</span>, <span class="pl-smi">stdout</span>, <span class="pl-smi">stderr</span> <span class="pl-k">:=</span> <span class="pl-c1">prepareCmd</span>(<span class="pl-s"><span class="pl-pds">"</span>golpal<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>-content<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>3 + 1<span class="pl-pds">"</span></span>)
+    <span class="pl-k">if</span> <span class="pl-smi">err</span> <span class="pl-k">:=</span> cmd.<span class="pl-c1">Run</span>(); err != <span class="pl-c1">nil</span> {
+        fmt.<span class="pl-c1">Println</span>(err.<span class="pl-c1">Error</span>())
+        <span class="pl-k">return</span>
+    }
+
+    <span class="pl-k">if</span> stderr.<span class="pl-c1">Len</span>() &gt; <span class="pl-c1">0</span> {
+        fmt.<span class="pl-c1">Println</span>(stderr.<span class="pl-c1">String</span>())
+        <span class="pl-k">return</span>
+    }
+
+    fmt.<span class="pl-c1">Println</span>(<span class="pl-s"><span class="pl-pds">"</span>result<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>=&gt;<span class="pl-pds">"</span></span>, strings.<span class="pl-c1">TrimSpace</span>(stdout.<span class="pl-c1">String</span>()))
+}</pre></div>
+
+<h4>
 <a id="more-example" class="anchor" href="#more-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>More Example</h4>
 
-<p>For more examples please take a look at the <a href="https://github.com/novalagung/golpal/blob/master/golpal_test.go"><code>golpal_test.go</code> file</a>.</p>
+<p>For more examples please take a look at the <a href="https://github.com/novalagung/golpal/blob/master/golpal_test.go"><code>golpal_test.go</code></a> and  <a href="https://github.com/novalagung/golpal/blob/master/cli_test.go"><code>cli_test.go</code></a>.</p>
 
-<h2>
+<h2 id="api-reference">
 <a id="api-reference" class="anchor" href="#api-reference" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>API Reference</h2>
 
 <h4>
@@ -244,19 +307,57 @@ fmt.<span class="pl-c1">Println</span>(<span class="pl-s"><span class="pl-pds">"
 </tbody>
 </table>
 
-<h2>
-<a id="contribution" class="anchor" href="#contribution" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contribution</h2>
+<h2 id="cli-commands">
+<a id="cli-commands" class="anchor" href="#cli-commands" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>CLI Commands</h2>
+
+<p>Golpal CLI (<code>golpal</code> / <code>golpal.exe</code>) has several arguments</p>
+
+<table>
+<thead>
+<tr>
+<th>Args</th>
+<th align="left">Usage</th>
+<th align="left">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-content</td>
+<td align="left">Eval from string</td>
+<td align="left"><code>-content="3 + 4"</code></td>
+</tr>
+<tr>
+<td>-file</td>
+<td align="left">Eval from file</td>
+<td align="left"><code>-file="/path/to/file"</code></td>
+</tr>
+<tr>
+<td>-mode</td>
+<td align="left">Golpal mode (<code>simple</code>, <code>normal</code>, <code>raw</code>). Default is <code>simple</code>
+</td>
+<td align="left"><code>-mode="raw"</code></td>
+</tr>
+<tr>
+<td>-libs</td>
+<td align="left">Include libs</td>
+<td align="left"><code>-libs="io/ioutil, bytes, strings"</code></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="contributing">
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contributing</h2>
 
 <p>Feel free to contribute</p>
 
 <p><code>fork</code> -&gt; <code>commit</code> -&gt; <code>push</code> -&gt; <code>pull request</code></p>
 
-<h2>
+<h2 id="license">
 <a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
 
 <p>MIT License</p>
 
-<h2>
+<h2 id="author">
 <a id="author" class="anchor" href="#author" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Author</h2>
 
 <p>Noval Agung Prayogo - <a href="http://novalagung.com">http://novalagung.com/</a></p>
