@@ -5,4 +5,4 @@
 go install
 
 cd cli
-go build -a -o %GOPATH%\bin\golpal
+go build -a -o %GOPATH%\bin\golpal.exe

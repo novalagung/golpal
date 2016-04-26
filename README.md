@@ -10,7 +10,18 @@ Golpal is simple library to allow developer to do **eval** operation on golang s
 
 [![Build Status](https://travis-ci.org/novalagung/golpal.png?branch=master)](https://travis-ci.org/novalagung/golpal)
 
-## Installation
+## Table of contents
+
+ - <a href="#user-content-installation")>Installation</a>
+ - <a href="#user-content-cli-installation")>CLI Installation</a>
+ - <a href="#user-content-example")>Example</a>
+ - <a href="#user-content-api-reference")>API Reference</a>
+ - <a href="#user-content-contributing")>Contributing</a>
+ - <a href="#user-content-license")>License</a>
+ - <a href="#user-content-author")>Author</a>
+
+
+<h2 id="installation">Installation</h2>
 
 > Stable version: v1.0.0
 
@@ -27,7 +38,27 @@ cd $GOPATH/src/github.com/novalagung/golpal
 go test *.go -v
 ```
 
-## Example
+
+<h2 id="cli-installation">CLI Installation</h2>
+
+By using cli, golpal will run faster. Follow these instructions to install golpal CLI.
+
+#### Linux
+
+```bash
+sh install_cli.sh
+golpal -content "3 + 4"
+```
+
+#### Windows
+
+```bash
+install_cli.bat
+golpal.exe -content "3 + 4"
+```
+
+
+<h2 id="example">Example</h2>
 
 #### Simple Example
 
@@ -131,11 +162,42 @@ if err != nil {
 fmt.Println("result", "=>", output)
 ```
 
+#### CLI Example
+
+```go
+func prepareCmd(cmdString string, args ...string) (*exec.Cmd, *bytes.Buffer, *bytes.Buffer) {
+	var stdout bytes.Buffer
+	var stderr bytes.Buffer
+
+	cmd := exec.Command(cmdString, args...)
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+
+	return cmd, &stdout, &stderr
+}
+
+func main() {
+	cmd, stdout, stderr := prepareCmd("golpal", "-content", "3 + 1")
+	if err := cmd.Run(); err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	if stderr.Len() > 0 {
+		fmt.Println(stderr.String())
+		return
+	}
+
+	fmt.Println("result", "=>", strings.TrimSpace(stdout.String()))
+}
+```
+
 #### More Example
 
-For more examples please take a look at the [`golpal_test.go` file](https://github.com/novalagung/golpal/blob/master/golpal_test.go).
+For more examples please take a look at the [`golpal_test.go` file](https://github.com/novalagung/golpal/blob/master/golpal_test.go) and  [`cli_test.go` file](https://github.com/novalagung/golpal/blob/master/cli_test.go).
 
-## API Reference
+
+<h2 id="api-reference">API Reference</h2>
 
 #### Func of `golpal`
 
@@ -163,16 +225,31 @@ There are only one func available, `golpal.New()` which return object that type 
 | .DeleteTemporaryPath() | Force delete temporary path which used to do the exec process |
 
 
-## Contribution
+<h2 id="cli-commands">CLI Commands</h2>
+
+Golpal CLI (`golpal` / `golpal.exe`) has several arguments
+
+| Args      | Usage          | Example |
+| --------- | :------------- | :------ |
+| -content | Eval from string | `-content="3 + 4"`
+| -file | Eval from file | `-file="/path/to/file"`
+| -mode | Golpal mode (`simple`, `normal`, `raw`). Default is `simple` | `-mode="raw"`
+| -libs | Include libs | `-libs="io/ioutil, bytes, strings"`
+
+
+
+<h2 id="contributing">Contributing</h2>
 
 Feel free to contribute
 
 `fork` -> `commit` -> `push` -> `pull request`
 
-## License
+
+<h2 id="license">License</h2>
 
 MIT License
 
-## Author
+
+<h2 id="author">Author</h2>
 
 Noval Agung Prayogo - [http://novalagung.com/](http://novalagung.com)
