@@ -9,7 +9,9 @@ package golpal
 import (
 	"bytes"
 	"fmt"
+	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
 	"strings"
 	"testing"
@@ -92,6 +94,48 @@ arr := []string{"my", "operation system", "is", osName}
 return strings.Join(arr, ", ")`
 
 	cmd, stdout, stderr := prepareCmd("golpal", "-content", cmdString, "-libs", "strings, runtime")
+	if err := cmd.Run(); err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	if stderr.Len() > 0 {
+		t.Fatal(stderr.String())
+		return
+	}
+
+	t.Log("result", "=>", strings.TrimSpace(stdout.String()))
+}
+
+func TestCliRaw(t *testing.T) {
+	cmdString := `
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Print("hello")
+}`
+
+	cmd, stdout, stderr := prepareCmd("golpal", "-content", cmdString, "-mode", "raw")
+	if err := cmd.Run(); err != nil {
+		t.Fatal(err)
+		return
+	}
+
+	if stderr.Len() > 0 {
+		t.Fatal(stderr.String())
+		return
+	}
+
+	t.Log("result", "=>", strings.TrimSpace(stdout.String()))
+}
+
+func TestCliSimpleFromFile(t *testing.T) {
+	basePath, _ := os.Getwd()
+	fileLocation := filepath.Join(basePath, "cli_test.txt")
+
+	cmd, stdout, stderr := prepareCmd("golpal", "-file", fileLocation)
 	if err := cmd.Run(); err != nil {
 		t.Fatal(err)
 		return
