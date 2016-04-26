@@ -167,7 +167,16 @@ func (g *Golpal) DeleteTemporaryPath() {
 }
 
 func (g *Golpal) AddLibs(libs ...string) *Golpal {
-	g.libs = append(g.libs, libs...)
+	for _, lib := range libs {
+		lib = strings.TrimSpace(lib)
+
+		if lib == "fmt" || lib == "" {
+			continue
+		}
+
+		g.libs = append(g.libs, lib)
+	}
+
 	return g
 }
 
