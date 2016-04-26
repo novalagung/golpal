@@ -83,15 +83,14 @@ func (g *Golpal) prepareTemporaryFile() (string, *os.File, error) {
 	fileLocation := filepath.Join(g.temporaryFolderPath, filename)
 
 	folder, err := os.Open(g.temporaryFolderPath)
-	if folder != nil {
-		defer folder.Close()
-	}
-	if os.IsNotExist(err) {
-		if err := os.Mkdir(g.temporaryFolderPath, defaultPerm); err != nil {
-			return fileLocation, nil, err
+	if err != nil {
+		if os.IsNotExist(err) {
+			if err := os.Mkdir(g.temporaryFolderPath, defaultPerm); err != nil {
+				return fileLocation, nil, err
+			}
 		}
 	}
-
+	defer folder.Close()
 	file, err := os.OpenFile(fileLocation, os.O_CREATE|os.O_WRONLY, defaultPerm)
 	return fileLocation, file, err
 }
