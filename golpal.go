@@ -36,7 +36,7 @@ __CMD__`
 
 const (
 	Version                               = "v1.0.0"
-	defaultWillDeleteTemporaryPath        = true
+	defaultAutoDeleteTemporaryPath        = true
 	defaultPerm                           = 0755
 	rawConstLibs                          = `__LIBS__`
 	rawConstCmd                           = `__CMD__`
@@ -44,7 +44,7 @@ const (
 )
 
 type Golpal struct {
-	WillDeleteTemporaryPath bool
+	AutoDeleteTemporaryPath bool
 	TemporaryPath           string
 
 	libs []string
@@ -57,7 +57,7 @@ func New() *Golpal {
 }
 
 func (g *Golpal) init() *Golpal {
-	g.WillDeleteTemporaryPath = defaultWillDeleteTemporaryPath
+	g.AutoDeleteTemporaryPath = defaultAutoDeleteTemporaryPath
 
 	// ===== prepare default temporary folder path
 	basePath, _ := os.Getwd()
@@ -95,7 +95,7 @@ func (g *Golpal) getTemporaryFolderExactPath() string {
 }
 
 func (g *Golpal) deleteTemporaryPathIfAllowed() {
-	if !g.WillDeleteTemporaryPath {
+	if !g.AutoDeleteTemporaryPath {
 		return
 	}
 
