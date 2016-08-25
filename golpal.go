@@ -35,64 +35,63 @@ import (
 __CMD__`
 
 const (
-	Version                    = "v1.0.0"
-	defaultDeleteTemporaryFile = true
-	defaultPerm                = 0755
-	rawConstLibs               = `__LIBS__`
-	rawConstCmd                = `__CMD__`
+	Version                               = "v1.0.0"
+	defaultWillDeleteTemporaryFile        = true
+	defaultPerm                           = 0755
+	rawConstLibs                          = `__LIBS__`
+	rawConstCmd                           = `__CMD__`
+	temporaryFolderPathSubFolder   string = "golpal-files"
 )
 
 type Golpal struct {
 	WillDeleteTemporaryFile bool
-	TemporaryFolderName     string
+	TemporaryFolderPath     string
 
-	temporaryFolderPath string
-	libs                []string
+	libs []string
 }
 
 func New() *Golpal {
-	g := new(Golpal)
-	g.WillDeleteTemporaryFile = defaultDeleteTemporaryFile
-	g.prepareDefaultTemporaryFolderName()
-	g.prepareDefaultLibs()
+	g := new(Golpal).init()
 
 	return g
 }
 
-func (g *Golpal) prepareDefaultTemporaryFolderName() {
-	if runtime.GOOS == "windows" {
-		g.TemporaryFolderName = "temp"
-	}
+func (g *Golpal) init() *Golpal {
+	g.WillDeleteTemporaryFile = defaultWillDeleteTemporaryFile
 
-	g.TemporaryFolderName = ".temp"
-}
-
-func (g *Golpal) prepareDefaultLibs() {
-	g.libs = []string{"fmt"}
-}
-
-func (g *Golpal) prepareTemporaryFolderPath() {
+	// ===== prepare default temporary folder path
 	basePath, _ := os.Getwd()
-	g.temporaryFolderPath = filepath.Join(basePath, g.TemporaryFolderName)
+	if runtime.GOOS == "windows" {
+		g.TemporaryFolderPath = filepath.Join(basePath, "temp")
+	}
+	g.TemporaryFolderPath = filepath.Join(basePath, ".temp")
+
+	// ===== prepare default libs
+	g.libs = []string{"fmt"}
+
+	return g
 }
 
 func (g *Golpal) prepareTemporaryFile() (string, *os.File, error) {
-	g.prepareTemporaryFolderPath()
-
 	filename := fmt.Sprintf("temp-%d.go", time.Now().UnixNano())
-	fileLocation := filepath.Join(g.temporaryFolderPath, filename)
+	fileLocation := filepath.Join(g.getTemporaryFolderExactPath(), filename)
 
-	folder, err := os.Open(g.temporaryFolderPath)
+	folder, err := os.Open(g.getTemporaryFolderExactPath())
 	if err != nil {
 		if os.IsNotExist(err) {
-			if err := os.Mkdir(g.temporaryFolderPath, defaultPerm); err != nil {
+			if err := os.MkdirAll(g.getTemporaryFolderExactPath(), defaultPerm); err != nil {
 				return fileLocation, nil, err
 			}
 		}
 	}
 	defer folder.Close()
+
 	file, err := os.OpenFile(fileLocation, os.O_CREATE|os.O_WRONLY, defaultPerm)
 	return fileLocation, file, err
+}
+
+func (g *Golpal) getTemporaryFolderExactPath() string {
+	return filepath.Join(g.TemporaryFolderPath, temporaryFolderPathSubFolder)
 }
 
 func (g *Golpal) deleteTemporaryPathIfAllowed() {
@@ -101,6 +100,36 @@ func (g *Golpal) deleteTemporaryPathIfAllowed() {
 	}
 
 	g.DeleteTemporaryPath()
+}
+
+func (g *Golpal) containsPrint(cmdString string) bool {
+	for _, each := range []string{"Println", "Printf", "Print"} {
+		if strings.Contains(cmdString, fmt.Sprintf("fmt.%s", each)) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (g *Golpal) renderLibs(cmdString string) string {
+	quotedLibString := []string{}
+
+	for _, each := range g.libs {
+		if !strings.HasPrefix(`"`, each) {
+			each = fmt.Sprintf(`"%s`, each)
+		}
+		if !strings.HasSuffix(`"`, each) {
+			each = fmt.Sprintf(`%s"`, each)
+		}
+
+		quotedLibString = append(quotedLibString, each)
+	}
+
+	libsString := strings.Join(quotedLibString, "\n")
+	res := strings.Replace(cmdString, rawConstLibs, libsString, -1)
+
+	return res
 }
 
 func (g *Golpal) runCommand(fileLocation string) (string, error) {
@@ -131,38 +160,11 @@ func (g *Golpal) runCommand(fileLocation string) (string, error) {
 	return strings.TrimSpace(stdout.String()), nil
 }
 
-func (g *Golpal) renderLibs(cmdString string) string {
-	quotedLibString := []string{}
+// ===== Public Funcs
 
-	for _, each := range g.libs {
-		if !strings.HasPrefix(`"`, each) {
-			each = fmt.Sprintf(`"%s`, each)
-		}
-		if !strings.HasSuffix(`"`, each) {
-			each = fmt.Sprintf(`%s"`, each)
-		}
-
-		quotedLibString = append(quotedLibString, each)
-	}
-
-	libsString := strings.Join(quotedLibString, "\n")
-	res := strings.Replace(cmdString, rawConstLibs, libsString, -1)
-
-	return res
-}
-
-func (g *Golpal) containsPrint(cmdString string) bool {
-	for _, each := range []string{"Println", "Printf", "Print"} {
-		if strings.Contains(cmdString, fmt.Sprintf("fmt.%s", each)) {
-			return true
-		}
-	}
-
-	return false
-}
-
-func (g *Golpal) DeleteTemporaryPath() {
-	os.RemoveAll(g.temporaryFolderPath)
+func (g *Golpal) DeleteTemporaryPath() *Golpal {
+	os.RemoveAll(g.getTemporaryFolderExactPath())
+	return g
 }
 
 func (g *Golpal) AddLibs(libs ...string) *Golpal {
