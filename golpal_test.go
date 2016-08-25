@@ -62,6 +62,7 @@ func TestExecuteSimpleWithManualDeleteTemporaryPath(t *testing.T) {
 
 	g := New()
 	g.WillDeleteTemporaryFile = false
+	g.TemporaryPath = "../testpath"
 
 	for _, each := range cmdsString {
 		output, err := g.ExecuteSimple(each)

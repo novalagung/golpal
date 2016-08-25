@@ -45,7 +45,7 @@ const (
 
 type Golpal struct {
 	WillDeleteTemporaryFile bool
-	TemporaryFolderPath     string
+	TemporaryPath           string
 
 	libs []string
 }
@@ -62,9 +62,9 @@ func (g *Golpal) init() *Golpal {
 	// ===== prepare default temporary folder path
 	basePath, _ := os.Getwd()
 	if runtime.GOOS == "windows" {
-		g.TemporaryFolderPath = filepath.Join(basePath, "temp")
+		g.TemporaryPath = filepath.Join(basePath, "temp")
 	}
-	g.TemporaryFolderPath = filepath.Join(basePath, ".temp")
+	g.TemporaryPath = filepath.Join(basePath, ".temp")
 
 	// ===== prepare default libs
 	g.libs = []string{"fmt"}
@@ -91,7 +91,7 @@ func (g *Golpal) prepareTemporaryFile() (string, *os.File, error) {
 }
 
 func (g *Golpal) getTemporaryFolderExactPath() string {
-	return filepath.Join(g.TemporaryFolderPath, temporaryFolderPathSubFolder)
+	return filepath.Join(g.TemporaryPath, temporaryFolderPathSubFolder)
 }
 
 func (g *Golpal) deleteTemporaryPathIfAllowed() {

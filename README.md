@@ -216,7 +216,7 @@ There are only one func available, `golpal.New()` which return object that type 
 | Property    | Type | Usage          |
 | ----------- | ---- | :------------- |
 | .WillDeleteTemporaryFile | `bool` | Determine if temporary path will be deleted or not after executing the source codes (default is `true`) |
-| .TemporaryFolderName | `string` | Name of temporary folder used to store all `*.go` temp files (default is `.temp` for *\*nix* / \*d*rwin*, and `temp` for *w\*ndows*) | Run golang source codes. The code will be placed inside virtual `main()` func |
+| .TemporaryPath | `string` | Path of temporary folder used to store all `*.go` temp files (default is `.temp` for *\*nix* / \*d*rwin*, and `temp` for *w\*ndows*) | Run golang source codes. The code will be placed inside virtual `main()` func |
 
 #### Methods of `*golpal.Golpal`
 
