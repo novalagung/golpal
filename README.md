@@ -1,4 +1,4 @@
-> This project is archived. Please use https://github.com/novalagung/go-eek for performing faster and safer evaluation.
+> This project is archived. Please use https://github.com/novalagung/go-eek for faster and safer evaluation library.
 
 <img align="right" alt="Golpal logo" src="https://raw.githubusercontent.com/novalagung/golpal/master/logo.png">
 
